@@ -1,0 +1,3 @@
+g++ -c main.cpp -I/home/stefan/Downloads/SFML-2.5.1/include/
+g++ main.o -o sfml-app -L/home/stefan/Downloads/SFML-2.5.1/lib/ -lglut -lGL -lsfml-graphics -lsfml-window -lsfml-system 
+ ./sfml-app
