@@ -1,0 +1,8 @@
+ g++ -c main.cpp pawn.cpp pawn.h  -I/home/stefan/Desktop/SFML-2.5.1//include/
+ 
+ 
+ g++ main.o pawn.o  -o sfml-app -L/home/stefan/Desktop/SFML-2.5.1/lib/ -lglut -lGL -lsfml-graphics -lsfml-window -lsfml-system
+ 
+ 
+ ./sfml-app
+           
