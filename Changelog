@@ -1,4 +1,17 @@
  
-May 12th 19
+May 12th 2019
 
+v0.01 --
 -setup and test environment
+-got tileset loading 
+-basic grid ,tile texture selection and drawing 
+
+
+
+v0.02 --May 19th 2019
+
+added cursor and controls (Up,Down etc and Z for selection)
+Changed default tile texture 
+added adaptable entities  (TODO make entity subclass for tile vs pawn )
+converted tile to entity so all tile can be animated 
+broke the panel selector (temporarily using "y,u,i,o,p")for selection until a more succinct solution found
