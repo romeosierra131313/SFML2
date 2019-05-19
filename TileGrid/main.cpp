@@ -27,16 +27,27 @@ sf::Sprite spr;
 sf::Sprite selectPanel;
 int Max_Map_Size= 4096;/////////MAX MAP SIZE 64*64/////////////RESET  here///////
 sf::Vector3i Grid[4096];////////RESET  here too///////
+
+mine::pawn pawns[32];
+int pawncount = 0;
+mine::pawn tile[1024];
+sf::Texture TextureGrass;
+sf::Texture TextureGrass2;
+sf::Texture Texturethree;
+sf::Texture Texturefour;
+
+
+
 sf::Vector3i panel[1000];
 sf::Vector2i pixelPos;
 sf::Texture* tiles[192];
 sf::RectangleShape rsa(sf::Vector2f(64,64));
-sf::RectangleShape rsb(sf::Vector2f(512,384));
+sf::RectangleShape rsb(sf::Vector2f(32,32));
+
 sf::Vector2u Tileset_Size;
 sf::RectangleShape openPanel(sf::Vector2f(60,30));
 
  mine::pawn cursor;
- mine::pawn entity;
 
 
 
@@ -95,9 +106,17 @@ if (!Tile_Texture.loadFromImage(Tileset_Image,sf::IntRect(0,0,tileWidth,tileWidt
     sf::Texture t;
     t.loadFromImage(Tileset_Image,sf::IntRect(1*tileWidth,0,tileWidth*2,tileWidth));
     cursor.setup(t,tileWidth,0.25f,sf::Vector2i(2,2));
+    
+    TextureGrass.loadFromImage(Tileset_Image,sf::IntRect(3*tileWidth,0,tileWidth*2,tileWidth));
+    TextureGrass2.loadFromImage(Tileset_Image,sf::IntRect(5*tileWidth,0,tileWidth*2,tileWidth));
+    Texturethree.loadFromImage(Tileset_Image,sf::IntRect(7*tileWidth,0,tileWidth*2,tileWidth));
+    Texturefour.loadFromImage(Tileset_Image,sf::IntRect(9*tileWidth,0,tileWidth*2,tileWidth));
+    
     sf::Texture t2;
     t2.loadFromImage(Tileset_Image,sf::IntRect(32,32,tileWidth*3,tileWidth));
-    entity.setup(t2,tileWidth,0.25f,sf::Vector2i(4,4));
+    pawns[0].setupPawn(t2,tileWidth,0.25f,sf::Vector2i(4,4),3);
+    pawns[1].setupPawn(t2,tileWidth,0.25f,sf::Vector2i(10,10),4);
+    pawncount = 2;
 
 
 }
@@ -109,53 +128,72 @@ void handleKeys(sf::Event Event){
        }
     if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape)){//////escape!!//////
                 window.close();}
+    if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Z)){
+            std::cout << " Z" << std::endl;
+                   for (int i = 0;i< pawncount; i++){
+                        if(cursor.location.x == pawns[i].location.x){
+                          if(cursor.location.y == pawns[i].location.y){  
+                              sf::Vector2i m(0,0);
+                              std::cout << " found" << std::endl;
+                              m.x = pawns[i].location.x + pawns[i].myRange;
+                              m.y = pawns[i].location.y;
+                             pawns[i].destination=m;
+                        }
+                   }                     
+            }                          
+        
+    }
                 
     if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::R)){  ///////reload tileset/////  
                std::cout << " reloaded";
-               Tileset_Image.loadFromFile("assets/terra.png") ; 
-               Tileset_Size = Tileset_Image.getSize();
-               Tileset_Texture.loadFromImage(Tileset_Image,sf::IntRect(0,0,Tileset_Size.x,Tileset_Size.y));
-                int count = 0;
-                    for (int a = 0;a<= (Tileset_Size.x/tileWidth)- 1; a++){    ///////set up selectpanel array////
-                        for (int b = 0;b<= (Tileset_Size.y/tileWidth)- 1; b++){
+
+               
                             bool done = false;
-                                while(!done){   
-                                        tiles[count]->loadFromImage(Tileset_Image,sf::IntRect(a*tileWidth,b*tileWidth,tileWidth,tileWidth));
+                                while(!done){  
+                                    
+      Tileset_Image.loadFromFile("assets/terra.png") ; 
+      Tileset_Size = Tileset_Image.getSize();
+      Tileset_Texture.loadFromImage(Tileset_Image,sf::IntRect(0,0,Tileset_Size.x,Tileset_Size.y));
+      TextureGrass.loadFromImage(Tileset_Image,sf::IntRect(3*tileWidth,0,tileWidth*2,tileWidth));
+      TextureGrass2.loadFromImage(Tileset_Image,sf::IntRect(5*tileWidth,0,tileWidth*2,tileWidth));   
+      sf::Texture cursorTexture;
+      cursorTexture.loadFromImage(Tileset_Image,sf::IntRect(1*tileWidth,0,tileWidth*2,tileWidth));
+      cursor.setup(cursorTexture,tileWidth,0.25f,sf::Vector2i(2,2));
+      sf::Texture pawn1;
+      pawn1.loadFromImage(Tileset_Image,sf::IntRect(32,32,tileWidth*3,tileWidth));
+      pawns[0].setTexture(pawn1);  
+      pawns[1].setTexture(pawn1);
                                 done = true;      
                                             }
-                                    count++;
-                                        }    
-                                     }
-         sf::Texture t;
-    t.loadFromImage(Tileset_Image,sf::IntRect(1*tileWidth,0,tileWidth*2,tileWidth));
-    cursor.setup(t,tileWidth,0.25f,sf::Vector2i(2,2));
-    sf::Texture t2;
-    t2.loadFromImage(Tileset_Image,sf::IntRect(32,32,tileWidth*3,tileWidth));
-    entity.setup(t2,tileWidth,0.25f,sf::Vector2i(4,4));                        
-        
-        
+       
         
     }
-                                  
-
+    if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Y)){
+                selection = 1;
+        
+    }   
+    if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::U)){//////escape!!//////
+                selection = 2;
+        
+    }   
+    if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::I)){//////escape!!//////
+                selection = 3;
+        
+    }  
+    if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::O)){//////escape!!//////
+                selection = 4;
+        
+    }
      
 }
 void buildGrid(){
      int count = 0;
-     int tmpt =8;
 for (int i = 0;i< Map_Width; i++){   ///////setup grid to draw on////
     for (int j = 0;j< Map_Height; j++){
     
- 
-    Grid[count].x = i;
-    Grid[count].y = j;
-    Grid[count].z = tmpt;/////setting to 8,9
-      
-       tmpt++;
-      if(tmpt >9){
-          tmpt = 8;
-    }
-    
+    tile[count].myType = 1;
+    tile[count].setup(TextureGrass,tileWidth,0.25f,sf::Vector2i(i,j));
+
 count++;
  
 }    
@@ -163,44 +201,29 @@ count++;
 }
 
 }
-void buildPanel(){
- int count = 0;
 
-for (int a = 0;a<= (Tileset_Size.x/tileWidth)- 1; a++){    ///////set up selectpanel array////
-    for (int b = 0;b<= (Tileset_Size.y/tileWidth)- 1; b++){
-    bool done = false;
-  while(!done){   
-    tiles[count] = new sf::Texture();                 //////////setting up an texture pointer array to hold all the textures /////////////
-    tiles[count]->create(tileWidth,tileWidth);
-    tiles[count]->loadFromImage(Tileset_Image,sf::IntRect(a*tileWidth,b*tileWidth,tileWidth,tileWidth));
-    panel[count].x = a+Map_Width+1;                  //////////setting up panel grid and offseting by the mapwidth 
-    panel[count].y = b;
-    panel[count].z = count;
-  done = true;      
+void drawTiles(float t){
+ for (int i = 0;i< Map_Height*Map_Width; i++){
+       window.draw(tile[i].getSprite(t));
+       rsa.setFillColor(sf::Color::Transparent);
+       rsa.setPosition(sf::Vector2f(tile[i].location.x*tileWidth, tile[i].location.y*tileWidth));  
+       window.draw(rsa);
   }
-count++;
-}    
 }
-count = 0;
-
-}
-void setTexturet(int selection){
-  spr.setTexture(*tiles[selection]);
-}
-void drawTiles(){
-
-    
-    for (int i = -1;i< Map_Height*Map_Width; i++){
-     setTexturet(Grid[i].z);
-     spr.setPosition(sf::Vector2f(Grid[i].x*tileWidth, Grid[i].y*tileWidth));
-     window.draw(spr);
-       rsa.setPosition(sf::Vector2f(Grid[i].x*tileWidth, Grid[i].y*tileWidth));  
-     //  window.draw(rsa);
-
-    
-    }
-              
-    
+void drawPawns(float t){
+ for (int i = 0;i< pawncount; i++){
+       
+       pawns[i].moveTo();
+       
+        for (int j = 0;j< 64; j++){
+        rsb.setFillColor(sf::Color::Blue);
+        rsb.setPosition(sf::Vector2f(pawns[i].movementRange[j].x*tileWidth, pawns[i].movementRange[j].y*tileWidth));  
+       window.draw(rsb);
+  }
+  
+  window.draw(pawns[i].getSprite(t)); 
+  
+  }
 }
 void drawPanel(){
     window.draw(rsb);
@@ -215,24 +238,27 @@ void drawPanelButton(){
     window.draw(openPanel);
     
 }
-void setTheSelection(int x,int y){
-    
-    for (int i = 0;i<= 65; i++){
-               if(panel[i].x == x  ){
-                 if(panel[i].y == y  ){
-                    selection = panel[i].z;
-                     std::cout << selection<<std::endl;
-                    break;
-               }
-            } 
-           }
-}
 void setTileToSelection(int x,int y){
     
     for (int i = 0;i<= Map_Height*Map_Width-1; i++){
-          if(Grid[i].x == x  ){
-            if(Grid[i].y == y  ){
-                     Grid[i].z = selection;  
+          if(tile[i].location.x == x  ){
+            if(tile[i].location.y == y  ){
+                     tile[i].myType = selection;  
+                     switch(selection){
+                         case 1:tile[i].setup(TextureGrass,tileWidth,0.25f,sf::Vector2i(x,y));
+                             
+                             break;
+                         case 2:tile[i].setup(TextureGrass2,tileWidth,0.25f,sf::Vector2i(x,y));
+                             
+                             break;
+                         case 3:tile[i].setup(Texturethree,tileWidth,0.25f,sf::Vector2i(x,y));
+                             
+                             break;
+                         case 4:tile[i].setup(Texturefour,tileWidth,0.25f,sf::Vector2i(x,y));
+                             
+                             break;
+                         
+                    }
                      break;
               }
             }   
@@ -258,7 +284,7 @@ y=position.y/tileWidth;
            
           if (event.mouseButton.button == sf::Mouse::Left) {
                mousePressed = 1;
-               setTheSelection(x,y);
+              
             }
        }
        else if(event.type == sf::Event::MouseWheelScrolled)
@@ -358,7 +384,8 @@ void Loop(){
        window.clear(sf::Color::Black); 
         sf::Time t = clock.getElapsedTime() ;
 
-        drawTiles();
+        drawTiles( t.asSeconds());
+        drawPawns( t.asSeconds());
        window.setView(window.getDefaultView());
        window.setView(view);
        drawPanel();
@@ -366,8 +393,8 @@ void Loop(){
        
        window.draw(cursor.getSprite( t.asSeconds() ));
        
-       entity.getSprite( t.asSeconds() ).setColor(sf::Color::Blue);
-       window.draw(entity.getSprite( t.asSeconds() ));
+       pawns[0].getSprite( t.asSeconds() ).setColor(sf::Color::Blue);
+       window.draw(pawns[0].getSprite( t.asSeconds() ));
        
         window.display();
       
@@ -379,7 +406,6 @@ void Loop(){
 int main(){
     doSetup();
     buildGrid();   
-    buildPanel();
      window.setVerticalSyncEnabled(true);
    
     Loop();
