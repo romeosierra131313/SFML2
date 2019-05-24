@@ -15,3 +15,9 @@ Changed default tile texture
 added adaptable entities  (TODO make entity subclass for tile vs pawn )
 converted tile to entity so all tile can be animated 
 broke the panel selector (temporarily using "y,u,i,o,p")for selection until a more succinct solution found
+
+v0.04--
+
+reworked entity identification from asking are you here , to the entity shouting i am here .
+added focus to entities ,prevents simultaeneous controling of GUI and game .
+basic menu for testing added.
