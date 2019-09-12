@@ -14,7 +14,7 @@ TODO
 <p><s>Buttons</s></p>
 <p>fork edit mode and play mode</p>
 <p>menu selection for screen</p>
-<p>entity and entity control/interactions</p>
+<p><s>entity and entity control/interactions</s></p>
 <p>add cutscene map and controls</p>
 <p>map manager</p>
 
